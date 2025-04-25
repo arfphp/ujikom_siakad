@@ -71,7 +71,7 @@ class JadwalAkademikResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()->visible(auth()->user()->isAdmin()),
                 ]),
             ]);
     }
@@ -95,5 +95,27 @@ class JadwalAkademikResource extends Resource
     public static function canViewAny(): bool
     {
         return auth()->user()->isDefault() || auth()->user()->isAdmin() || auth()->user()->isDosen();
+    }
+
+    public static function canCreate(): bool
+    {
+        return auth()->user()->isAdmin();
+    }
+
+    public static function canEditAny($record): bool
+    {
+        return auth()->user()->isAdmin();
+    }
+    public static function canEdit($record): bool
+    {
+        return auth()->user()->isAdmin();
+    }
+    public static function canDelete($record): bool
+    {
+        return auth()->user()->isAdmin($record);
+    }
+    public static function canForceDelete($record): bool
+    {
+        return auth()->user()->isAdmin();
     }
 }

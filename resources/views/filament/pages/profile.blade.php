@@ -3,7 +3,7 @@
         {{ $this->form }}
 
         <div class="flex justify-end mt-6">
-            <x-filament::button type="submit">
+            <x-filament::button type="submit" :disabled="auth()->user()->isAdmin()">
                 Simpan Profil
             </x-filament::button>
         </div>

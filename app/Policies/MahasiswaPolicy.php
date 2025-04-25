@@ -29,7 +29,7 @@ class MahasiswaPolicy
      */
     public function create(User $user): bool
     {
-        return $user->isAdmin();
+        return false;
     }
 
     /**
@@ -37,7 +37,7 @@ class MahasiswaPolicy
      */
     public function update(User $user, Mahasiswa $mahasiswa): bool
     {
-        return $user->isAdmin() || $user->mahasiswa?->NIM === $mahasiswa->NIM;
+        return false;
     }
 
     /**

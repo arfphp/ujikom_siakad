@@ -11,7 +11,9 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Models\User;
 
 class PresensiAkademikResource extends Resource
 {
@@ -37,7 +39,9 @@ class PresensiAkademikResource extends Resource
                 Forms\Components\Select::make('status_kehadiran')
                     ->options([
                         'Hadir' => 'Hadir',
-                        'Tidak Hadir' => 'Tidak Hadir'
+                        'Izin' => 'Tidak Hadir',
+                        'Sakit' => 'Sakit',
+                        'Alpha' => 'Alpha'
                     ])
                     ->required()
             ]);
@@ -55,7 +59,12 @@ class PresensiAkademikResource extends Resource
                     ->date()
                     ->searchable(),
 
-                Tables\Columns\TextColumn::make('status_kehadiran')->searchable()
+                Tables\Columns\TextColumn::make('status_kehadiran')->searchable()->color(fn (string $state): string => match ($state) {
+                    'Alpha' => 'danger',
+                    'Sakit' => 'danger',
+                    'Izin' => 'warning',
+                    'Hadir' => 'success'
+                })
             ])
             ->filters([
                 //
@@ -65,7 +74,9 @@ class PresensiAkademikResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()->visible(fn (User $record): bool => 
+                    auth()->user()->isAdmin()
+                ),
                 ]),
             ]);
     }
@@ -88,6 +99,21 @@ class PresensiAkademikResource extends Resource
 
     public static function canViewAny(): bool
     {
-        return auth()->user()->isDefault() || auth()->user()->isAdmin();
+        return auth()->user()->isDefault();
+    }
+
+    public static function canEdit($record): bool
+    {
+        return auth()->user()->isAdmin();
+    }
+
+    public static function canDelete($record): bool
+    {
+        return auth()->user()->isAdmin();
+    }
+
+    public static function canForceDelete(Model $record): bool
+    {
+        return auth()->user()->isAdmin();
     }
 }

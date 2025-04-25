@@ -11,6 +11,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class MataKuliahResource extends Resource
@@ -100,7 +101,7 @@ class MataKuliahResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()->visible(auth()->user()->isAdmin()),
                 ]),
             ]);
     }
@@ -124,5 +125,27 @@ class MataKuliahResource extends Resource
     public static function canViewAny(): bool
     {
         return auth()->user()->isAdmin() || auth()->user()->isDosen() || auth()->user()->isDefault();
+    }
+
+    public static function canCreate(): bool
+    {
+        return auth()->user()->isAdmin();
+    }
+
+    public static function canEditAny($record): bool
+    {
+        return auth()->user()->isAdmin();
+    }
+    public static function canEdit($record): bool
+    {
+        return auth()->user()->isAdmin();
+    }
+    public static function canDelete($record): bool
+    {
+        return auth()->user()->isAdmin($record);
+    }
+    public static function canForceDelete($record): bool
+    {
+        return auth()->user()->isAdmin();
     }
 }

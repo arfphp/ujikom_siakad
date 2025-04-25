@@ -12,7 +12,6 @@ use App\Models\Mahasiswa;
 use App\Models\Dosen;
 use App\Models\Golongan;
 use Illuminate\Support\Facades\Auth;
-
 class Profile extends Page implements HasForms
 {
     use InteractsWithForms;
@@ -62,7 +61,8 @@ class Profile extends Page implements HasForms
                 TextInput::make('email')
                     ->label('Email')
                     ->default($this->user->email)
-                    ->disabled(),
+                    ->disabled($this->user->role !== 'admin')
+                    ->dehydrated(),
 
                 $this->user->role === 'mahasiswa' ?
                 TextInput::make('NIM')
@@ -79,19 +79,21 @@ class Profile extends Page implements HasForms
                     ->regex('/^\d{18}$/')
                     ->validationMessages([
                         'regex' => 'Format NIP harus 18 digit angka'
-                    ]),
+                    ])
+                    ->hidden($this->user->role === 'admin'),
 
                 $this->user->role === 'mahasiswa' ?
                 Select::make('id_Gol')
                     ->label('Golongan')
                     ->options(Golongan::all()->pluck('nama_Gol', 'id_Gol'))
+                    ->hidden($this->user->role === 'admin')
                  :
                 Select::make('ini hidden')
                     ->label('ini hidden')
                     ->options([
                          '1' => '1',
                     ])
-                    ->hidden($this->user->role === 'dosen'),
+                    ->hidden($this->user->role === 'dosen' || $this->user->role === 'admin'),
                 $this->user->role === 'mahasiswa' ?
                 Select::make('Semester')
                     ->label('Semester')
@@ -105,19 +107,22 @@ class Profile extends Page implements HasForms
                         '7' => '7',
                         '8' => '8',
                     ])
+                    ->hidden($this->user->role === 'admin')
                  :
                  Select::make('ini hidden')
                     ->label('ini hidden')
                     ->options([
                         '1' => '1',
                     ])
-                 ->hidden($this->user->role === 'dosen'),
+                    ->hidden($this->user->role === 'dosen' || $this->user->role === 'admin'),
                 TextInput::make('Alamat')
-                    ->required(),
+                    ->required()
+                    ->hidden($this->user->role === 'admin'),
 
                 TextInput::make('Nohp')
                     ->tel()
-                    ->required(),
+                    ->required()
+                    ->hidden($this->user->role === 'admin'),
 
                 TextInput::make('role')
                     ->label('Role')

@@ -9,4 +9,8 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateUserAccounts extends CreateRecord
 {
     protected static string $resource = UserAccountsResource::class;
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl();
+    }
 }

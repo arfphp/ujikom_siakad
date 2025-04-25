@@ -8,5 +8,5 @@ Route::get('/', function () {
     return redirect('/admin/login');
 });
 
-Route::get('/krs/{nim}/pdf', [ExportController::class, 'krsPdf'])
+Route::get('/export/krs/{nim}/{semester}', [ExportController::class, 'krsPdf'])
     ->name('krs.pdf');

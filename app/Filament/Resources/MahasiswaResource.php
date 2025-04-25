@@ -112,6 +112,6 @@ class MahasiswaResource extends Resource
 
     public static function canViewAny(): bool
     {
-        return auth()->user()->isDefault() || auth()->user()->isAdmin();
+        return auth()->user()->isAdmin();
     }
 }

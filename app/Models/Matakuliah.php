@@ -32,6 +32,6 @@ class Matakuliah extends Model
     }
     public function jadwal()
     {
-        return $this->hasMany(JadwalAkademik::class, 'kode_mk');
+        return $this->hasMany(JadwalAkademik::class, 'Kode_mk');
     }
 }
